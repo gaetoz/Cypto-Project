@@ -1,0 +1,83 @@
+import java.util.*;
+
+public class CryptoProject {
+    public static void main(String[] arg) {
+        Scanner input = new Scanner(System.in);
+        System.out.println("\nWelcome to the Encryption Machine.  What message do you wish to encrypt? ");
+        String text = input.nextLine();
+        System.out.println("How much do you want to shift your letters?  How many spaces? ");
+        int shift = input.nextInt();
+        System.out.println("How many letters do you want to group for each block of the code? ");
+        int lpg = input.nextInt();
+        encryptString(text, shift, lpg);
+    }
+
+    public static String normalizeText(String text) {
+        String x = text.replace(" ", "");    //remove white spaces
+        String y = x.replaceAll("[^a-zA-Z]", "");        //remove any punctuation
+        String z = y.toUpperCase();
+        return z;
+    }
+    public static String Caesarify(String text, int key) {
+        String shifted = shiftAlphabet(key);
+        String normal = shiftAlphabet(0);
+        String cypher = "";
+        for(int i = 0; i < text.length(); i++) {
+            int position = normal.indexOf(text.charAt(i));
+            cypher += shifted.charAt(position);
+        }
+        return cypher;
+    }
+    public static String shiftAlphabet(int shift){
+        int start = 0;
+        if (shift < 0) {
+            start = (int) 'Z' + shift + 1;
+        }
+        else{
+            start = 'A' + shift;
+        }
+        String result ="";
+        char currChar = (char) start;
+        for(; currChar <= 'Z'; ++currChar) {
+            result += currChar;
+        }
+        if (result.length() < 26) {
+            for(currChar = 'A'; result.length() < 26; ++currChar) {
+                result += currChar;
+            }
+        }
+        return result;
+    }
+    public static String Groupify(String text, int lpg){
+        String grouped = ("");
+        int current = 0;
+        int length = text.length();
+        for (int i =0; i < length; i++) {
+            if (current == lpg) {
+                current = 0;
+                grouped += " ";
+            }
+            grouped += Character.toString(text.charAt(i));
+            current++;
+        }
+        if (current < lpg) {
+            while (current != lpg) {
+                current++;
+                grouped += "x";
+            }
+        }
+        return grouped;
+    }
+    public static String encryptString(String text, int shift, int lpg){
+        String normalized = normalizeText(text);
+        //System.out.println("\nYour normalized text is: " + normalized);
+        String caesarified = Caesarify(normalized, shift);
+        //System.out.println("Your normalized text caezarified is: " + caesarified);
+        String grouped = Groupify(caesarified, lpg);
+        System.out.println("Your encrypted message is: " + grouped);
+        return grouped;
+    }
+}
+
+
+
